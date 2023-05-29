@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import os
 
 class Scrapper:
-    def __init__(self, url_sources, files_path="../data"):
+    def __init__(self, url_sources, files_path="data"):
         self.url_sources = url_sources
         self.files_path = files_path
 
@@ -55,9 +56,15 @@ class Scrapper:
         # save articles to a file
         if articles is None or len(articles) == 0:
             return
+        
         url = articles[0][0].split('/')[2].replace('www.', '')
         source_name = url.split('.com')[0].replace('.','').replace('-', '').strip()
         current_date = datetime.datetime.now().strftime("%d-%m-%Y")
+
+        # create folder if not exists
+        if not os.path.exists(self.files_path):
+            os.makedirs(self.files_path)
+
         with open(f"{self.files_path}/articles__{current_date}__{source_name}.csv", "w") as f:
             f.write("url,title\n")
             for article in articles:
